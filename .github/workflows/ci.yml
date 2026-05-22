@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install dependencies
         run: |
@@ -18,9 +18,10 @@ jobs:
           sudo apt-get install -y \
             build-essential \
             cmake \
+            gnucash \
+            gnucash-common \
             libcsv-dev \
-            libglib2.0-dev \
-            libgnucash-dev
+            libglib2.0-dev
 
       - name: Run tests
         run: make test
@@ -29,10 +30,9 @@ jobs:
         run: make package
 
       - name: Upload package artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: gnc-toolbox-packages
           path: |
             build/package/*.tar.gz
             build/package/SHA256SUMS
-

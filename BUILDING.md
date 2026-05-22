@@ -7,7 +7,7 @@ This project uses CMake. The repository also includes a Makefile wrapper for com
 On Ubuntu/Debian:
 
 ```bash
-sudo apt install libgnucash-dev libglib2.0-dev libcsv-dev cmake build-essential
+sudo apt install gnucash gnucash-common libglib2.0-dev libcsv-dev cmake build-essential
 ```
 
 Optional developer tooling:

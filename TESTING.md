@@ -7,7 +7,7 @@ This document describes the test suite currently present in the repository. The 
 The test suite uses the same native dependencies as the application:
 
 ```bash
-sudo apt install libgnucash-dev libglib2.0-dev libcsv-dev cmake build-essential
+sudo apt install gnucash gnucash-common libglib2.0-dev libcsv-dev cmake build-essential
 ```
 
 Some tests create temporary GnuCash books through the installed GnuCash backend. They should not require a real user book and should not modify repository sample data.

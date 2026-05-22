@@ -28,7 +28,7 @@ This project is written in C and links against GnuCash, GLib, and libcsv.
 On Ubuntu/Debian:
 
 ```bash
-sudo apt install libgnucash-dev libglib2.0-dev libcsv-dev cmake build-essential
+sudo apt install gnucash gnucash-common libglib2.0-dev libcsv-dev cmake build-essential
 ```
 
 Backend URIs such as MySQL work only when the locally installed GnuCash libraries support that backend.
