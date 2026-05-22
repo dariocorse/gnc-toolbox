@@ -108,6 +108,7 @@ static TempBook_t create_temp_book(void)
 {
     TempBook_t temp_book = {0};
     temp_book.path = create_temp_path("gnc-toolbox-book-XXXXXX.gnucash");
+    unlink(temp_book.path);
 
     QofBook *book = qof_book_new();
     g_assert_nonnull(book);
@@ -144,6 +145,22 @@ static void destroy_temp_book(TempBook_t *temp_book)
         g_free(temp_book->path);
         temp_book->path = NULL;
     }
+}
+
+static void rollback_unsaved_temp_book(TempBook_t *temp_book)
+{
+    if (temp_book == NULL || temp_book->session == NULL) {
+        return;
+    }
+
+    /*
+     * GnuCash 4.8 can raise a fatal DBI unlock assertion when destroying a
+     * newly-created, unsaved file session. End the session here and leave
+     * process teardown to reclaim it. Saved and reloaded sessions still go
+     * through closebook(), which fully destroys them.
+     */
+    qof_session_end(temp_book->session);
+    temp_book->session = NULL;
 }
 
 static MatchEntry_t *create_single_split_match(const char *account_name)
@@ -303,8 +320,7 @@ static void test_real_import_unmatched_transaction_uses_review_account(void)
     g_assert_cmpint(review_result, ==, SPLIT_MATCH_EXACT);
     g_assert_nonnull(found_review_split);
 
-    closebook(book.session, false);
-    book.session = NULL;
+    rollback_unsaved_temp_book(&book);
 
     free_data_t(data);
     free_match_entry_t(review_match);
@@ -325,8 +341,7 @@ static void test_real_import_rejects_missing_match(void)
 
     g_assert_false(createTransaction(book.session, checking, data, NULL));
 
-    closebook(book.session, false);
-    book.session = NULL;
+    rollback_unsaved_temp_book(&book);
 
     free_data_t(data);
     destroy_temp_book(&book);
@@ -349,8 +364,7 @@ static void test_real_import_missing_destination_account_creates_no_partial_tran
     g_assert_false(createTransaction(book.session, checking, data, match));
     g_assert_false(find_exact_split(checking, data));
 
-    closebook(book.session, false);
-    book.session = NULL;
+    rollback_unsaved_temp_book(&book);
 
     free_data_t(data);
     free_match_entry_t(match);
@@ -403,9 +417,11 @@ static void test_real_merge_pipeline_roundtrip(void)
     g_assert_cmpstr(merged_tx->number->str, ==, "MERGE-01");
     g_assert_cmpint(merged_tx->amountCents, ==, -1875);
 
+    g_assert_true(closebook(source_reloaded, false));
+    source_reloaded = NULL;
+
     MatchEntry_t *target_match = create_single_split_match("Target Offset");
     g_assert_true(createTransaction(target_reloaded, to_account, merged_tx, target_match));
-    g_assert_true(closebook(source_reloaded, false));
     g_assert_true(closebook(target_reloaded, true));
 
     QofSession *target_verify = loadBook(target_book.path);
@@ -450,8 +466,7 @@ static void test_real_book_accepts_qualified_match_account_paths(void)
         g_test_fail();
     }
 
-    closebook(book.session, false);
-    book.session = NULL;
+    rollback_unsaved_temp_book(&book);
 
     free_data_t(data);
     free_match_entry_t(match);

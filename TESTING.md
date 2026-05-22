@@ -62,6 +62,21 @@ make test-verbose
 make test-unit
 ```
 
+### CI Reproduction
+
+Use the Ubuntu 22.04 Docker repro before pushing changes that touch GnuCash book
+handling, test setup, or CI packaging:
+
+```bash
+./scripts/test-ci-ubuntu22.sh
+```
+
+The script installs the same native packages used by GitHub Actions, runs the
+build as a non-root user inside the container, and writes build output under
+`/tmp/gnc-toolbox-ci` rather than the repository `build/` directory. This avoids
+root-owned build artifacts in the working tree and catches GnuCash/GLib behavior
+that can differ from a developer host.
+
 ### Test Runner Script
 
 The repository also ships `run_tests.sh`:

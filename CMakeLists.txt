@@ -133,7 +133,26 @@ target_link_libraries(test_gnc-toolbox PRIVATE
 )
 
 # Add tests
-add_test(NAME unit_tests COMMAND test_gnc-toolbox)
+set(BOOK_INTEGRATION_TESTS
+    /book_integration/create_save_reload
+    /book_integration/import_pipeline_roundtrip
+    /book_integration/import_unmatched_transaction_uses_review_account
+    /book_integration/import_rejects_missing_match
+    /book_integration/import_missing_destination_account_creates_no_partial_tx
+    /book_integration/merge_pipeline_roundtrip
+    /book_integration/accepts_qualified_match_account_paths
+)
+
+add_test(NAME unit_tests COMMAND test_gnc-toolbox -x /book_integration)
+
+foreach(TEST_PATH IN LISTS BOOK_INTEGRATION_TESTS)
+    string(REPLACE "/book_integration/" "book_integration." TEST_NAME "${TEST_PATH}")
+    add_test(NAME ${TEST_NAME} COMMAND test_gnc-toolbox -p ${TEST_PATH})
+    set_tests_properties(${TEST_NAME} PROPERTIES
+        TIMEOUT 60
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endforeach()
 
 # Set test environment
 set_tests_properties(unit_tests PROPERTIES

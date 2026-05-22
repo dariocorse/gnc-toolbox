@@ -91,10 +91,9 @@ QofSession *loadBook(const char *url)
     const char *error = qof_session_get_error_message(session);
     if (has_session_error_message(error)) {
         OUT_FATAL("Load error: '%s'\n", error);
-        // Ensure session and book resources are released before returning
-        qof_session_end(session);
+        // Ensure session resources are released before returning.
+        // qof_session_destroy() also destroys the book owned by the session.
         qof_session_destroy(session);
-        qof_book_destroy(book);
         return NULL;
     }
     return session;
@@ -432,38 +431,50 @@ bool createTransaction(QofSession *session, Account *account, Data_t *data, Matc
 
 bool closebook(QofSession *session, bool save)
 {
+    if (session == NULL) {
+        return false;
+    }
+
     bool success = true;
 
     // We save the changes (we don't use the callback here)
     if (save) {
         OUT_VERBOSE("Saving file");
 
-        // Temporarily suppress both stdout and stderr to hide gz_thread_func EOF message
-        fflush(stdout);
-        fflush(stderr);
+        gboolean suppress_save_output = !g_test_initialized();
+        int stdout_fd = -1;
+        int stderr_fd = -1;
 
-        int stdout_fd = dup(STDOUT_FILENO);
-        int stderr_fd = dup(STDERR_FILENO);
-        int dev_null = open("/dev/null", O_WRONLY);
+        if (suppress_save_output) {
+            // Temporarily suppress both stdout and stderr to hide gz_thread_func EOF message.
+            fflush(stdout);
+            fflush(stderr);
 
-        if (dev_null != -1) {
-            dup2(dev_null, STDOUT_FILENO);
-            dup2(dev_null, STDERR_FILENO);
-            close(dev_null);
+            stdout_fd = dup(STDOUT_FILENO);
+            stderr_fd = dup(STDERR_FILENO);
+            int dev_null = open("/dev/null", O_WRONLY);
+
+            if (dev_null != -1) {
+                dup2(dev_null, STDOUT_FILENO);
+                dup2(dev_null, STDERR_FILENO);
+                close(dev_null);
+            }
         }
 
         const char *error_message = NULL;
         success = save_session_with_hooks(session, qof_session_save_hook,
                                           qof_session_get_error_hook, NULL, &error_message);
 
-        // Restore stdout and stderr
-        if (stdout_fd != -1) {
-            dup2(stdout_fd, STDOUT_FILENO);
-            close(stdout_fd);
-        }
-        if (stderr_fd != -1) {
-            dup2(stderr_fd, STDERR_FILENO);
-            close(stderr_fd);
+        if (suppress_save_output) {
+            // Restore stdout and stderr.
+            if (stdout_fd != -1) {
+                dup2(stdout_fd, STDOUT_FILENO);
+                close(stdout_fd);
+            }
+            if (stderr_fd != -1) {
+                dup2(stderr_fd, STDERR_FILENO);
+                close(stderr_fd);
+            }
         }
 
         OUT_VERBOSE("\n");
@@ -474,8 +485,8 @@ bool closebook(QofSession *session, bool save)
         }
     }
 
-    // End session
-    qof_session_end(session);
+    // Destroying the session also ends it and releases the backend lock.
+    qof_session_destroy(session);
     return success;
 }
 
