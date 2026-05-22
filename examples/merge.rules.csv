@@ -1,0 +1,12 @@
+## Merge rules for copying source-book transactions into Assets:Checking.
+## The column row is required by the shared rule parser but is not used to parse
+## source-book transactions during merge.
+FILTEROUT,CONTAINS,PENDING
+Assets:Checking, -
+UNMATCHED,Expenses:Uncategorized
+DATE:FORMAT=YYYY-MM-DD,DESCR,AMOUNT,NUM
+Grocery,Expenses:Food:Groceries,100
+Payroll,Income:Salary,100
+$AMZN*,Expenses:Shopping,100
+Mortgage,Expenses:Mortgage,80,Expenses:Insurance,20
+

@@ -1,0 +1,6 @@
+Date,Description,Amount1,Amount2,Number
+12/25/2023,"Valid with empty",100.00,,TX001
+01/01/2024,"Mixed amounts",,50.25,TX002
+01/15/2024,"All empty",,,TX003
+02/01/2024,"Whitespace only"," "," ",TX004
+02/15/2024,"Valid sum",75.00,25.00,TX005

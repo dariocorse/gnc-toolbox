@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest an improvement to gnc-toolbox
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What workflow or limitation should this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: What should the tool do?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example input
+      description: Add anonymized CSV/rule-file snippets if they help explain the request.
+    validations:
+      required: false
+

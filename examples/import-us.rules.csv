@@ -1,0 +1,12 @@
+## US-style import rules for examples/bank-us.csv
+## Create these accounts in GnuCash before writing an import.
+CSVPARAMS,"DELIMITER=,",QUOTE=",DECIMAL_SEP=.,"THOUSAND_SEP=,",SKIP_ROWS=1
+FILTEROUT,CONTAINS,PENDING
+Assets:Checking, -
+UNMATCHED,Expenses:Uncategorized
+DATE:FORMAT=MM/DD/YYYY,DESCR,AMOUNT,NUM
+Grocery,Expenses:Food:Groceries,100
+Payroll,Income:Salary,100
+$AMZN*,Expenses:Shopping,100
+Mortgage,Expenses:Mortgage,80,Expenses:Insurance,20
+

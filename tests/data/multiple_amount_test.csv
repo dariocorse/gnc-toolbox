@@ -1,0 +1,4 @@
+Date,Description,Amount1,Amount2,Number
+12/25/2023,"Salary with bonus",3000.00,500.00,TX001
+01/01/2024,"Split payment",-200.50,-75.25,TX002
+01/15/2024,"Transfer with fee",1000.00,-5.00,TX003

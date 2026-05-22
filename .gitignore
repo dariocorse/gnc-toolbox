@@ -1,0 +1,103 @@
+# Build directories
+build/
+build-*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+_deps/
+
+# Build outputs
+gnu_mi
+*.exe
+
+# IDE files
+*.user
+*.pro.user*
+.claude/
+.codex
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled Object files
+*.o
+*.obj
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Testing
+Testing/
+CTestTestfile.cmake
+
+# Package files
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.Z
+*.deb
+*.rpm
+*.dmg
+*.pkg
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+test_file.txt
+test_readonly.txt
+test_dir/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor backups
+*~
+*.bak
+*.orig
+
+# Coverage reports
+*.gcda
+*.gcno
+*.gcov
+coverage.info
+coverage/
+
+# Documentation build
+docs/build/
+docs/_build/
+
+# Local configuration
+config.local
+*.local
+
+# Downloaded dependencies
+cpputest-*.tar.gz

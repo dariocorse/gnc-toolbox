@@ -1,0 +1,115 @@
+.TH GNC-TOOLBOX 1 "2026-05-22" "gnc-toolbox 1.0.0" "User Commands"
+.SH NAME
+gnc-toolbox \- import, match, and merge transactions for GnuCash books
+.SH SYNOPSIS
+.B gnc-toolbox
+\fBhelp\fR
+.br
+.B gnc-toolbox
+\fBhelp\fR \fIcommand\fR
+.br
+.B gnc-toolbox
+\fBimport\fR [\fIOPTIONS\fR] \fICSV_FILE\fR
+.br
+.B gnc-toolbox
+\fBmerge\fR [\fIOPTIONS\fR]
+.SH DESCRIPTION
+.B gnc-toolbox
+is a command-line utility for repeatable GnuCash transaction imports.
+It reads CSV bank exports, applies parsing and matching rules, and writes
+transactions to a GnuCash book. It can also merge missing transactions from
+one GnuCash book/account into another book.
+.PP
+Use dry-run mode while creating or changing rule files, and back up important
+GnuCash books before writing changes.
+.SH COMMANDS
+.TP
+.B import
+Read transactions from a CSV file and create matching transactions in the
+destination GnuCash book.
+.TP
+.B merge
+Copy missing transactions from a source GnuCash book/account into a target
+GnuCash book.
+.TP
+.B help
+Show general help or command-specific help.
+.SH IMPORT OPTIONS
+.TP
+.B \-b, --book \fIBOOK_REF\fR
+Destination GnuCash book path, file URI, or backend URI.
+.TP
+.B \-c, --config \fIFILE\fR
+CSV-like rule file.
+.TP
+.B \-n, --dry-run
+Parse and match transactions without saving changes.
+.TP
+.B \-D, --no-duplicates
+Skip transactions already found in the destination account.
+.TP
+.B \-v, --verbose
+Show progress and summaries.
+.TP
+.B \-d, --debug
+Show detailed parser and matching diagnostics.
+.TP
+.B \-q, --quiet
+Show only errors.
+.SH MERGE OPTIONS
+.TP
+.B \-b, --book \fIBOOK_REF\fR
+Target GnuCash book.
+.TP
+.B \-f, --from \fIBOOK_REF\fR
+Source GnuCash book.
+.TP
+.B \-a, --account \fINAME\fR
+Source account to merge from.
+.TP
+.B \-c, --config \fIFILE\fR
+CSV-like rule file used for target account, filters, matching, and unmatched routing.
+.TP
+.B \-n, --dry-run
+Preview the merge without saving changes.
+.TP
+.B \-v, --verbose
+Show progress and summaries.
+.TP
+.B \-d, --debug
+Show detailed diagnostics.
+.TP
+.B \-q, --quiet
+Show only errors.
+.SH RULE FILES
+Rule files are CSV-like text files. Rows appear in this order:
+.PP
+.nf
+optional CSVPARAMS row
+zero or more FILTEROUT rows
+one base-account row
+optional UNMATCHED row
+one column-definition row
+one or more match rows
+.fi
+.PP
+Use an explicit
+.B UNMATCHED
+row when transactions without a match rule should still be imported for manual
+review in GnuCash.
+.SH EXAMPLES
+.nf
+gnc-toolbox import bank.csv --book finances.gnucash --config bank-rules.csv --dry-run --verbose
+gnc-toolbox import bank.csv --book finances.gnucash --config bank-rules.csv --no-duplicates
+gnc-toolbox merge --book current.gnucash --from archive.gnucash --account "Assets:Checking" --config merge-rules.csv --dry-run
+.fi
+.SH FILES
+.TP
+.I /usr/local/share/doc/gnc-toolbox/
+Installed documentation, examples, and license text.
+.SH SEE ALSO
+.BR gnucash (1)
+.PP
+Full documentation is available in README.md and USAGE.md.
+.SH LICENSE
+GNU AGPLv3 or later.

@@ -1,0 +1,7 @@
+Date,Description,Amount,Number
+32/13/2023,"Invalid Date",-123.45,TX001
+15/03/abc,"Invalid Year",-234.56,TX002
+,"Empty Date",345.67,TX003
+15/03/2023,,123.45,TX004
+03/15/2023,"Invalid Amount",abc.def,TX005
+15/03/2023,"Very Long Transaction Number That Exceeds Normal Limits",123.45,TX006VERYLONGNUMBERTHATGOESONFFOREVERANDEVERANDEVERANDEVER
